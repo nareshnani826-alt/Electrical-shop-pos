@@ -1,0 +1,174 @@
+@import "tailwindcss";
+@import "tw-animate-css";
+
+@custom-variant dark (&:is(.dark *));
+
+:root {
+  --radius: 0.5rem;
+  --background: oklch(1 0 0);
+  --foreground: oklch(0.145 0 0);
+  --card: oklch(1 0 0);
+  --card-foreground: oklch(0.145 0 0);
+  --popover: oklch(1 0 0);
+  --popover-foreground: oklch(0.145 0 0);
+  --primary: oklch(0.45 0.16 255);
+  --primary-foreground: oklch(0.985 0 0);
+  --secondary: oklch(0.96 0 0);
+  --secondary-foreground: oklch(0.205 0 0);
+  --muted: oklch(0.965 0 0);
+  --muted-foreground: oklch(0.5 0 0);
+  --accent: oklch(0.94 0.03 255);
+  --accent-foreground: oklch(0.205 0 0);
+  --destructive: oklch(0.577 0.245 27.325);
+  --border: oklch(0.91 0 0);
+  --input: oklch(0.88 0 0);
+  --ring: oklch(0.55 0.16 255);
+}
+
+.dark {
+  --background: oklch(0.16 0 0);
+  --foreground: oklch(0.985 0 0);
+  --card: oklch(0.2 0 0);
+  --card-foreground: oklch(0.985 0 0);
+  --popover: oklch(0.2 0 0);
+  --popover-foreground: oklch(0.985 0 0);
+  --primary: oklch(0.65 0.15 255);
+  --primary-foreground: oklch(0.145 0 0);
+  --secondary: oklch(0.27 0 0);
+  --secondary-foreground: oklch(0.985 0 0);
+  --muted: oklch(0.27 0 0);
+  --muted-foreground: oklch(0.7 0 0);
+  --accent: oklch(0.3 0.04 255);
+  --accent-foreground: oklch(0.985 0 0);
+  --destructive: oklch(0.704 0.191 22.216);
+  --border: oklch(1 0 0 / 12%);
+  --input: oklch(1 0 0 / 18%);
+  --ring: oklch(0.6 0.12 255);
+}
+
+@theme inline {
+  --color-background: var(--background);
+  --color-foreground: var(--foreground);
+  --color-card: var(--card);
+  --color-card-foreground: var(--card-foreground);
+  --color-popover: var(--popover);
+  --color-popover-foreground: var(--popover-foreground);
+  --color-primary: var(--primary);
+  --color-primary-foreground: var(--primary-foreground);
+  --color-secondary: var(--secondary);
+  --color-secondary-foreground: var(--secondary-foreground);
+  --color-muted: var(--muted);
+  --color-muted-foreground: var(--muted-foreground);
+  --color-accent: var(--accent);
+  --color-accent-foreground: var(--accent-foreground);
+  --color-destructive: var(--destructive);
+  --color-border: var(--border);
+  --color-input: var(--input);
+  --color-ring: var(--ring);
+  --radius-sm: calc(var(--radius) - 4px);
+  --radius-md: calc(var(--radius) - 2px);
+  --radius-lg: var(--radius);
+  --radius-xl: calc(var(--radius) + 4px);
+  --font-sans: var(--font-inter), ui-sans-serif, system-ui, sans-serif;
+  --font-mono: ui-monospace, "Cascadia Mono", Consolas, monospace;
+}
+
+@layer base {
+  * {
+    @apply border-border outline-ring/50;
+  }
+  body {
+    @apply bg-background text-foreground antialiased;
+  }
+  /* Hide number spinners: cashiers type, they don't click arrows. */
+  input[type="number"]::-webkit-inner-spin-button,
+  input[type="number"]::-webkit-outer-spin-button {
+    -webkit-appearance: none;
+    margin: 0;
+  }
+  input[type="number"] {
+    -moz-appearance: textfield;
+  }
+}
+
+kbd {
+  @apply inline-flex h-5 min-w-5 items-center justify-center rounded border bg-muted px-1 font-mono text-[10px] font-medium text-muted-foreground;
+}
+
+/* ---------------------------------------------------------------------------
+   Printing. Only #print-root is shown; @page size is injected per format by
+   printable-invoice.tsx (80mm / 58mm roll, or A4).
+   --------------------------------------------------------------------------- */
+#print-root {
+  display: none;
+}
+
+@media print {
+  html,
+  body {
+    background: #fff !important;
+    color: #000 !important;
+  }
+  body > *:not(#print-root) {
+    display: none !important;
+  }
+  #print-root {
+    display: block;
+  }
+  * {
+    -webkit-print-color-adjust: exact;
+    print-color-adjust: exact;
+  }
+}
+
+.receipt {
+  font-family: "Courier New", ui-monospace, monospace;
+  color: #000;
+  font-size: 11px;
+  line-height: 1.25;
+}
+.receipt[data-width="80"] {
+  width: 72mm; /* 80mm roll, ~72mm printable */
+  padding: 0 2mm;
+}
+.receipt[data-width="58"] {
+  width: 48mm; /* 58mm roll, ~48mm printable */
+  font-size: 9.5px;
+  padding: 0 1mm;
+}
+.receipt hr {
+  border: 0;
+  border-top: 1px dashed #000;
+  margin: 4px 0;
+}
+.receipt table {
+  width: 100%;
+  border-collapse: collapse;
+}
+.receipt td,
+.receipt th {
+  padding: 1px 0;
+  vertical-align: top;
+}
+
+.a4-invoice {
+  width: 190mm;
+  font-size: 10.5pt;
+  color: #000;
+  font-family: var(--font-sans);
+}
+.a4-invoice table {
+  width: 100%;
+  border-collapse: collapse;
+}
+.a4-invoice th,
+.a4-invoice td {
+  border: 1px solid #000;
+  padding: 3px 5px;
+}
+.a4-invoice thead {
+  display: table-header-group; /* repeat header on each page */
+}
+.a4-invoice tr {
+  break-inside: avoid;
+}
